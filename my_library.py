@@ -34,3 +34,19 @@ def naive_bayes(table, evidence_row, target):
   numerator1 = (c_prob1)*(p_prob1)
   probs = compute_probs(numerator0, numerator1)
   return probs
+
+def metrics(zipped_list):
+  assert isinstance(zipped_list, list), f'zipped_list is not a list. It is {type(zipped_list)}'
+  assert all([isinstance(col, list) for col in zipped_list]), f'zipped_list is not a list of lists.'
+  assert all((isinstance(item, (list,tuple)) and len(item)==2) for item in zipped_list), f'zipped_list does not have each value as a pair of items'
+  assert all(all(isinstance(val, int) and val >=0 for val in item) for item in zipped_list), f'Arguments may not be negative and must be integers.'
+  tn = sum([1 if pair==[0,0] else 0 for pair in zipped_list])
+  tp = sum([1 if pair==[1,1] else 0 for pair in zipped_list])
+  fp = sum([1 if pair==[1,0] else 0 for pair in zipped_list])
+  fn = sum([1 if pair==[0,1] else 0 for pair in zipped_list])
+  Precision = tp/(tp+fp) if (tp+fp) != 0 else 0
+  Recall = tp/(tp+fn) if (tp+fn) != 0 else 0
+  F1 = 2*((Precision*Recall)/(Precision+Recall)) if (Precision+Recall) != 0 else 0
+  Accuracy = (tp + tn)/(tp + tn + fp + fn) if (tp + fp + tn + fn) != 0 else 0
+  metrics_dict = {'Precision':tp/(tp+fp) if (tp+fp) != 0 else 0, 'Recall':tp/(tp+fn) if (tp+fn) != 0 else 0, 'F1':2*((Precision*Recall)/(Precision+Recall))if (Precision+Recall) != 0 else 0, 'Accuracy':(tp + tn)/(tp + tn + fp + fn) if (tp + fp + tn + fn) != 0 else 0}
+  return metrics_dict
