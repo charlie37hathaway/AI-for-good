@@ -50,3 +50,23 @@ def metrics(zipped_list):
   Accuracy = (tp + tn)/(tp + tn + fp + fn) if (tp + fp + tn + fn) != 0 else 0
   metrics_dict = {'Precision':tp/(tp+fp) if (tp+fp) != 0 else 0, 'Recall':tp/(tp+fn) if (tp+fn) != 0 else 0, 'F1':2*((Precision*Recall)/(Precision+Recall))if (Precision+Recall) != 0 else 0, 'Accuracy':(tp + tn)/(tp + tn + fp + fn) if (tp + fp + tn + fn) != 0 else 0}
   return metrics_dict
+
+from sklearn.ensemble import RandomForestClassifier  
+def run_random_forest(train, test, target, n):
+  X = up_drop_column(train, target)
+  y = up_get_column(train,target)  
+  k_feature_table = up_drop_column(test, target)
+  k_actuals = up_get_column(test, target)  
+  clf = RandomForestClassifier(n_estimators=n, max_depth=2, random_state=0)
+  clf.fit(X, y)  
+  probs = clf.predict_proba(k_feature_table)
+  pos_probs = [p for n,p in probs]
+  all_mets = []
+  for t in thresholds:
+    all_predictions = [1 if pos>t else 0 for pos in pos_probs]
+    pred_act_list = up_zip_lists(all_predictions, k_actuals)
+    mets = metrics(pred_act_list)
+    mets['Threshold'] = t
+    all_mets = all_mets + [mets]
+  metrics_table = up_metrics_table(all_mets)
+  return metrics_table
