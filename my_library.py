@@ -39,8 +39,10 @@ def metrics(zipped_list):
   assert isinstance(zipped_list, list), f'zipped_list is not a list. It is {type(zipped_list)}'
   assert all([isinstance(col, list) for col in zipped_list]), f'zipped_list is not a list of lists.'
   assert all((isinstance(item, (list,tuple)) and len(item)==2) for item in zipped_list), f'zipped_list does not have each value as a pair of items'
-  assert all(all(isinstance(val, int) and val >=0 for val in item) for item in zipped_list), f'Arguments may not be negative and must be integers.'
-  tn = sum([1 if pair==[0,0] else 0 for pair in zipped_list])
+for a,b in zipped_list:
+   assert isinstance(a,(int,float)) and isinstance(b,(int,float)), f'zipped_list contains a non-int or non-float pair: {[a,b]}'
+for a,b in zipped_list:
+   assert float(a) in [0.0,1.0] and float(b) in [0.0,1.0], f'zipped_list contains a non-binary pair: {[a,b]}'  tn = sum([1 if pair==[0,0] else 0 for pair in zipped_list])
   tp = sum([1 if pair==[1,1] else 0 for pair in zipped_list])
   fp = sum([1 if pair==[1,0] else 0 for pair in zipped_list])
   fn = sum([1 if pair==[0,1] else 0 for pair in zipped_list])
