@@ -87,4 +87,4 @@ def try_archs(full_table, target, architectures, thresholds):
       all_mets = all_mets + [mets]
     print(f'Architecture: {arch}')
     print(up_metrics_table(all_mets))
-    return None 
+  return None 
